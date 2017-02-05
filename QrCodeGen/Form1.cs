@@ -40,6 +40,7 @@ namespace QrCodeGen
                     case 2 : pictureBox1.Image = qrCode.Draw("http://" + textBox1.Text, 50, 6);
                         break;
                 }
+                buttonLogo.Enabled = true;
             }        
         }
 
@@ -148,16 +149,32 @@ namespace QrCodeGen
 
         private void button4_Click(object sender, EventArgs e)
         {
-            Bitmap tempImg;
-            SaveFileDialog sfd = new SaveFileDialog();
-            Rectangle rect = new Rectangle(0, 0, 512, 512);
-            if (sfd.ShowDialog() == DialogResult.OK)
+            if (pictureBox1.Image != null)
             {
-                tempImg = new Bitmap(pictureBox1.Image,512,512);
-                Bitmap mp = tempImg.Clone(rect, tempImg.PixelFormat);
-                mp.Save(sfd.FileName,System.Drawing.Imaging.ImageFormat.Png);
-                tempImg.Dispose();
-                mp.Dispose();
+                Bitmap tempImg;
+                SaveFileDialog sfd = new SaveFileDialog();
+
+                int res;
+                if (comboBoxResolution.SelectedIndex == 0)
+                    res = 1024;
+                else if (comboBoxResolution.SelectedIndex == 1)
+                    res = 512;
+                else
+                    res = 256;
+
+                Rectangle rect = new Rectangle(0, 0, res, res);
+                if (sfd.ShowDialog() == DialogResult.OK)
+                {
+                    tempImg = new Bitmap(pictureBox1.Image, res, res);
+                    Bitmap mp = tempImg.Clone(rect, tempImg.PixelFormat);
+                    mp.Save(sfd.FileName, System.Drawing.Imaging.ImageFormat.Png);
+                    tempImg.Dispose();
+                    mp.Dispose();
+                }
+            }
+            else
+            {
+                MetroFramework.MetroMessageBox.Show(this, "There is no Qr Code To Save", "Error", MessageBoxButtons.OK, 140);
             }
             
            
