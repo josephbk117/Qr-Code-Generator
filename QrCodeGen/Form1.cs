@@ -75,7 +75,6 @@ namespace QrCodeGen
         private Bitmap imageOuterEdge(Bitmap img,int size)
         {
             Bitmap bmp = new Bitmap(img.Width, img.Height, PixelFormat.Format32bppArgb);
-            //bmp.MakeTransparent();
             Color transparent = Color.FromArgb(0, 0, 0, 0);
             for(int i=0;i<img.Width;i++)
             {
@@ -83,21 +82,10 @@ namespace QrCodeGen
                 {
                     if (!isColourSame(img.GetPixel(i, j), transparent))
                     {
-
-                        //for (int k = 0; k < 40; k++)
-                        //{
-                        //    bmp.SetPixel(i + k, j + k, Color.White);
-                        //}
-
-                        //for (int k = 0; k < 40; k++)
-                        //{
-                        //    if(i-k >= 0 && j-k >= 0)
-                        //        bmp.SetPixel(i - k, j - k, Color.White);
-                        //}
                         bmp.SetPixel(i, j, Color.White);
                     }                          
                                    
-                    }
+                }
             }
             return bmp;
         }
@@ -162,12 +150,12 @@ namespace QrCodeGen
         {
             Bitmap tempImg;
             SaveFileDialog sfd = new SaveFileDialog();
-            Rectangle rect = new Rectangle(0, 0, 270, 270);
+            Rectangle rect = new Rectangle(0, 0, 512, 512);
             if (sfd.ShowDialog() == DialogResult.OK)
             {
-                tempImg = new Bitmap(pictureBox1.Image);
+                tempImg = new Bitmap(pictureBox1.Image,512,512);
                 Bitmap mp = tempImg.Clone(rect, tempImg.PixelFormat);
-                mp.Save(sfd.FileName,System.Drawing.Imaging.ImageFormat.Jpeg);
+                mp.Save(sfd.FileName,System.Drawing.Imaging.ImageFormat.Png);
                 tempImg.Dispose();
                 mp.Dispose();
             }
@@ -194,14 +182,13 @@ namespace QrCodeGen
                 graphics.DrawImage(baseImage, 0, 0);
                 Brush b;
                 var br = new SolidBrush(backGround);
-                //graphics.FillRectangle(br, overlayPosX, overlayPosY, 60f, 60f);     
+                
                 graphics.DrawImage(imageOuterEdge(overlayImage, 2), overlayPosX, overlayPosY,80f,80f);         
                 graphics.DrawImage(overlayImage, baseImage.Width/2-30f, baseImage.Height/2-30f, 60f, 60f);                
                 pictureBox1.Image = finalImage;
             }
             
         }
-        //TODO : Fix this similarity check 
         private float colourSimilarity(Color a,Color b)
         {
             return ((1f - (Math.Abs((float)(a.R + a.G + a.B) - (float)(b.R + b.G + b.B)) / (6f * 255f)))*100f);
